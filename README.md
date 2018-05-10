@@ -23,7 +23,7 @@ Please see latest version of the driver with instructions how to install in: [Re
 ## Options
 
 ```bash
-docker-machine create -d aliyunecs --help
+docker-machine create -d spotinst --help
 ```
  Option Name                                          | Description                                           | required
 ------------------------------------------------------|------------------------------------------------------|----|
