@@ -23,11 +23,11 @@ import (
 )
 
 const (
-	driverName               = "spotinst"
-	defaultSSHUser           = "ubuntu"
-	dockerPort               = 2376
-	sshPorts                 = 22
-	tag                      = "[SPOTINST DRIVER] "
+	driverName     = "spotinst"
+	defaultSSHUser = "ubuntu"
+	dockerPort     = 2376
+	sshPorts       = 22
+	tag            = "[SPOTINST DRIVER] "
 )
 
 type Config struct {
@@ -129,32 +129,32 @@ func (d *Driver) GetCreateFlags() []mcnflag.Flag {
 	return []mcnflag.Flag{
 
 		mcnflag.StringFlag{
-			Name:   "spotinst_token",
+			Name:   "spotinst-token",
 			Usage:  "spotinst token",
 			EnvVar: "SPOTINST_TOKEN",
 		},
 		mcnflag.StringFlag{
-			Name:   "spotinst_account",
+			Name:   "spotinst-account",
 			Usage:  "spotinst account",
 			EnvVar: "SPOTINST_ACCOUNT",
 		},
 		mcnflag.StringFlag{
-			Name:   "spotinst_elastigroup_id",
+			Name:   "spotinst-elastigroup-id",
 			Usage:  "spotinst elastigroup id",
 			EnvVar: "SPOTINST_ELSTIGROUP_ID",
 		},
 		mcnflag.StringFlag{
-			Name:   "spotinst_sshkey_path",
+			Name:   "spotinst-sshkey-path",
 			Usage:  "spotinst sshkey path",
 			EnvVar: "SPOTINST_SSHKEY_PATH",
 		},
 		mcnflag.BoolFlag{
-			Name:   "use_public_ip",
+			Name:   "use-public-ip",
 			Usage:  "use public ip",
 			EnvVar: "USE_PUBLIC_IP",
 		},
 		mcnflag.StringFlag{
-			Name:   "ssh_user",
+			Name:   "ssh-user",
 			Usage:  "use ssh user",
 			EnvVar: "SSH_USER",
 		},
@@ -162,12 +162,12 @@ func (d *Driver) GetCreateFlags() []mcnflag.Flag {
 }
 
 func (d *Driver) SetConfigFromFlags(flags drivers.DriverOptions) error {
-	d.SpotinstAccount = flags.String("spotinst_account")
-	d.SpotinstToken = flags.String("spotinst_token")
-	d.SpotinstElastiGroupID = flags.String("spotinst_elastigroup_id")
-	d.UsePublicIPOnly = flags.Bool("use_public_ip")
-	d.SSHUser = flags.String("ssh_user")
-	d.SSHKeyPath = flags.String("spotinst_sshkey_path")
+	d.SpotinstAccount = flags.String("spotinst-account")
+	d.SpotinstToken = flags.String("spotinst-token")
+	d.SpotinstElastiGroupID = flags.String("spotinst-elastigroup-id")
+	d.UsePublicIPOnly = flags.Bool("use-public-ip")
+	d.SSHUser = flags.String("ssh-user")
+	d.SSHKeyPath = flags.String("spotinst-sshkey-path")
 
 	return nil
 }
@@ -459,7 +459,7 @@ func (d *Driver) waitForInstanceStart() error {
 
 		laps = laps - 1
 		stdLog(DEBUG, "Waiting for instance IP %v retries left", strconv.Itoa(laps))
-		time.Sleep(10 * time.Second)
+		time.Sleep(20 * time.Second)
 	}
 
 	err := errors.New("Wait to instance" + *d.InstanceId + "reached timeout")
@@ -486,7 +486,7 @@ func (d *Driver) waitForInstanceSpot(spotInstanceRequestID *string) error {
 
 		laps = laps - 1
 		stdLog(DEBUG, "Waiting for instance  %v retries left", strconv.Itoa(laps))
-		time.Sleep(10 * time.Second)
+		time.Sleep(20 * time.Second)
 
 	}
 
@@ -498,15 +498,35 @@ func (d *Driver) waitForInstanceSpot(spotInstanceRequestID *string) error {
 func stdLog(logSeverity string, fmtString string, args ...interface{}) {
 	switch logSeverity {
 	case DEBUG:
-		log.Debugf(tag+fmtString, args)
+		if args != nil {
+			log.Debugf(tag+fmtString, args)
+		} else {
+			log.Debugf(tag + fmtString)
+		}
 	case INFO:
-		log.Infof(tag+fmtString, args)
+		if args != nil {
+			log.Infof(tag+fmtString, args)
+		} else {
+			log.Infof(tag + fmtString)
+		}
 	case WARN:
-		log.Warn(tag+fmtString, args)
+		if args != nil {
+			log.Warnf(tag+fmtString, args)
+		} else {
+			log.Warnf(tag + fmtString)
+		}
 	case ERROR:
-		log.Error(tag+fmtString, args)
+		if args != nil {
+			log.Error(tag+fmtString, args)
+		} else {
+			log.Error(tag + fmtString)
+		}
 	default:
-		log.Infof(tag+fmtString, args)
+		if args != nil {
+			log.Infof(tag+fmtString, args)
+		} else {
+			log.Infof(tag + fmtString)
+		}
 	}
 }
 
