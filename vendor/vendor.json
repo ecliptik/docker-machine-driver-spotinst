@@ -1,0 +1,249 @@
+{
+	"comment": "",
+	"ignore": "",
+	"package": [
+		{
+			"checksumSHA1": "9NFR6RG8H2fNyKHscGmuGLQhRm4=",
+			"origin": "github.com/docker/machine/vendor/github.com/Azure/go-ansiterm",
+			"path": "github.com/Azure/go-ansiterm",
+			"revision": "6f9ecacb8588b3329b1e1ae78f8b169d0fd6b783",
+			"revisionTime": "2018-05-09T13:05:35Z"
+		},
+		{
+			"checksumSHA1": "3/UphB+6Hbx5otA4PjFjvObT+L4=",
+			"origin": "github.com/docker/machine/vendor/github.com/Azure/go-ansiterm/winterm",
+			"path": "github.com/Azure/go-ansiterm/winterm",
+			"revision": "6f9ecacb8588b3329b1e1ae78f8b169d0fd6b783",
+			"revisionTime": "2018-05-09T13:05:35Z"
+		},
+		{
+			"checksumSHA1": "5rPfda8jFccr3A6heL+JAmi9K9g=",
+			"origin": "github.com/docker/machine/vendor/github.com/davecgh/go-spew/spew",
+			"path": "github.com/davecgh/go-spew/spew",
+			"revision": "6f9ecacb8588b3329b1e1ae78f8b169d0fd6b783",
+			"revisionTime": "2018-05-09T13:05:35Z"
+		},
+		{
+			"checksumSHA1": "dYvOgXOXzosSiK6gaZDGnb5Uv2A=",
+			"origin": "github.com/docker/machine/vendor/github.com/docker/docker/pkg/term",
+			"path": "github.com/docker/docker/pkg/term",
+			"revision": "6f9ecacb8588b3329b1e1ae78f8b169d0fd6b783",
+			"revisionTime": "2018-05-09T13:05:35Z"
+		},
+		{
+			"checksumSHA1": "RbKd6O8P1UnaoxbdmV6eukac69M=",
+			"origin": "github.com/docker/machine/vendor/github.com/docker/docker/pkg/term/windows",
+			"path": "github.com/docker/docker/pkg/term/windows",
+			"revision": "6f9ecacb8588b3329b1e1ae78f8b169d0fd6b783",
+			"revisionTime": "2018-05-09T13:05:35Z"
+		},
+		{
+			"checksumSHA1": "mY0t6aKsP1BUQF2hbd7BTiD+7u0=",
+			"path": "github.com/docker/machine/drivers/fakedriver",
+			"revision": "6f9ecacb8588b3329b1e1ae78f8b169d0fd6b783",
+			"revisionTime": "2018-05-09T13:05:35Z"
+		},
+		{
+			"checksumSHA1": "JurLTvmf6Mp73CYj2JXRPwVc8Zc=",
+			"path": "github.com/docker/machine/libmachine/drivers",
+			"revision": "6f9ecacb8588b3329b1e1ae78f8b169d0fd6b783",
+			"revisionTime": "2018-05-09T13:05:35Z"
+		},
+		{
+			"checksumSHA1": "b6FiGli26lMxC8618Y3QfmTluRE=",
+			"path": "github.com/docker/machine/libmachine/drivers/plugin",
+			"revision": "6f9ecacb8588b3329b1e1ae78f8b169d0fd6b783",
+			"revisionTime": "2018-05-09T13:05:35Z"
+		},
+		{
+			"checksumSHA1": "SkhXwp1AEW6WnbD8VQa5QftSKtg=",
+			"path": "github.com/docker/machine/libmachine/drivers/plugin/localbinary",
+			"revision": "6f9ecacb8588b3329b1e1ae78f8b169d0fd6b783",
+			"revisionTime": "2018-05-09T13:05:35Z"
+		},
+		{
+			"checksumSHA1": "HQcQ+y1nCLDqopXCwNsKfrjgXV4=",
+			"path": "github.com/docker/machine/libmachine/drivers/rpc",
+			"revision": "6f9ecacb8588b3329b1e1ae78f8b169d0fd6b783",
+			"revisionTime": "2018-05-09T13:05:35Z"
+		},
+		{
+			"checksumSHA1": "M0VD2B9Zqky36R9g4gHTABjW7AQ=",
+			"path": "github.com/docker/machine/libmachine/log",
+			"revision": "6f9ecacb8588b3329b1e1ae78f8b169d0fd6b783",
+			"revisionTime": "2018-05-09T13:05:35Z"
+		},
+		{
+			"checksumSHA1": "XIdpqyZtMW3gLbUefSiqsJvcDpw=",
+			"path": "github.com/docker/machine/libmachine/mcnflag",
+			"revision": "6f9ecacb8588b3329b1e1ae78f8b169d0fd6b783",
+			"revisionTime": "2018-05-09T13:05:35Z"
+		},
+		{
+			"checksumSHA1": "2nI0gnUYBVbIplUYcI7aPG5YtOA=",
+			"path": "github.com/docker/machine/libmachine/mcnutils",
+			"revision": "6f9ecacb8588b3329b1e1ae78f8b169d0fd6b783",
+			"revisionTime": "2018-05-09T13:05:35Z"
+		},
+		{
+			"checksumSHA1": "Y3z4RY0YJS6AmhoQsPWtGnYyNTU=",
+			"path": "github.com/docker/machine/libmachine/ssh",
+			"revision": "6f9ecacb8588b3329b1e1ae78f8b169d0fd6b783",
+			"revisionTime": "2018-05-09T13:05:35Z"
+		},
+		{
+			"checksumSHA1": "/WrG2E//R/TRxa7WjZKZ3ydBAKI=",
+			"path": "github.com/docker/machine/libmachine/state",
+			"revision": "6f9ecacb8588b3329b1e1ae78f8b169d0fd6b783",
+			"revisionTime": "2018-05-09T13:05:35Z"
+		},
+		{
+			"checksumSHA1": "q2r55GR/IIt8lDiXJYGsEdzQQqc=",
+			"path": "github.com/docker/machine/libmachine/version",
+			"revision": "6f9ecacb8588b3329b1e1ae78f8b169d0fd6b783",
+			"revisionTime": "2018-05-09T13:05:35Z"
+		},
+		{
+			"checksumSHA1": "46LtB874bxUt0i9W/11h3Mf+SYE=",
+			"path": "github.com/docker/machine/version",
+			"revision": "6f9ecacb8588b3329b1e1ae78f8b169d0fd6b783",
+			"revisionTime": "2018-05-09T13:05:35Z"
+		},
+		{
+			"checksumSHA1": "LuFv4/jlrmFNnDb/5SCSEPAM9vU=",
+			"origin": "github.com/docker/machine/vendor/github.com/pmezard/go-difflib/difflib",
+			"path": "github.com/pmezard/go-difflib/difflib",
+			"revision": "6f9ecacb8588b3329b1e1ae78f8b169d0fd6b783",
+			"revisionTime": "2018-05-09T13:05:35Z"
+		},
+		{
+			"checksumSHA1": "ySaT8G3I3y4MmnoXOYAAX0rC+p8=",
+			"origin": "github.com/docker/machine/vendor/github.com/sirupsen/logrus",
+			"path": "github.com/sirupsen/logrus",
+			"revision": "6f9ecacb8588b3329b1e1ae78f8b169d0fd6b783",
+			"revisionTime": "2018-05-09T13:05:35Z"
+		},
+		{
+			"checksumSHA1": "qMmQeinXDiAgXLKP1bBiuXkmXEs=",
+			"path": "github.com/spotinst/spotinst-sdk-go/service/elastigroup",
+			"revision": "bd1fee990d100f2d8f8ff4613934ba20779b295e",
+			"revisionTime": "2018-05-08T12:46:35Z"
+		},
+		{
+			"checksumSHA1": "vyfv8WV2FtCmi+eWGVyX8lOsjSI=",
+			"path": "github.com/spotinst/spotinst-sdk-go/service/elastigroup/providers/aws",
+			"revision": "bd1fee990d100f2d8f8ff4613934ba20779b295e",
+			"revisionTime": "2018-05-08T12:46:35Z"
+		},
+		{
+			"checksumSHA1": "3zPuD/4VD76JnjSTjPwVHdXntz4=",
+			"path": "github.com/spotinst/spotinst-sdk-go/service/elastigroup/providers/azure",
+			"revision": "bd1fee990d100f2d8f8ff4613934ba20779b295e",
+			"revisionTime": "2018-05-08T12:46:35Z"
+		},
+		{
+			"checksumSHA1": "Jq3CR5XOj47kuuwppuP9fv+JTaA=",
+			"path": "github.com/spotinst/spotinst-sdk-go/service/elastigroup/providers/gce",
+			"revision": "bd1fee990d100f2d8f8ff4613934ba20779b295e",
+			"revisionTime": "2018-05-08T12:46:35Z"
+		},
+		{
+			"checksumSHA1": "fGN5/baisrpR3JFpHkf5O7ucUHA=",
+			"path": "github.com/spotinst/spotinst-sdk-go/spotinst",
+			"revision": "bd1fee990d100f2d8f8ff4613934ba20779b295e",
+			"revisionTime": "2018-05-08T12:46:35Z"
+		},
+		{
+			"checksumSHA1": "LJ3DuPkj7aCWtmJZKJtLmxf9UiM=",
+			"path": "github.com/spotinst/spotinst-sdk-go/spotinst/client",
+			"revision": "bd1fee990d100f2d8f8ff4613934ba20779b295e",
+			"revisionTime": "2018-05-08T12:46:35Z"
+		},
+		{
+			"checksumSHA1": "0qTPZgz7mjSCrCZZDHvFZuHL/Nk=",
+			"path": "github.com/spotinst/spotinst-sdk-go/spotinst/credentials",
+			"revision": "bd1fee990d100f2d8f8ff4613934ba20779b295e",
+			"revisionTime": "2018-05-08T12:46:35Z"
+		},
+		{
+			"checksumSHA1": "lQI5hFOaauIWcNAi31tJbKqBhKs=",
+			"path": "github.com/spotinst/spotinst-sdk-go/spotinst/log",
+			"revision": "bd1fee990d100f2d8f8ff4613934ba20779b295e",
+			"revisionTime": "2018-05-08T12:46:35Z"
+		},
+		{
+			"checksumSHA1": "xfVQVqDHJxvX2FU4zKtOKAxhbtY=",
+			"path": "github.com/spotinst/spotinst-sdk-go/spotinst/session",
+			"revision": "bd1fee990d100f2d8f8ff4613934ba20779b295e",
+			"revisionTime": "2018-05-08T12:46:35Z"
+		},
+		{
+			"checksumSHA1": "g7bewE5rt0NrvN+9rLEahvJtX5s=",
+			"path": "github.com/spotinst/spotinst-sdk-go/spotinst/util/jsonutil",
+			"revision": "bd1fee990d100f2d8f8ff4613934ba20779b295e",
+			"revisionTime": "2018-05-08T12:46:35Z"
+		},
+		{
+			"checksumSHA1": "/oApHzKZwKYrVFEosDhHV4y3sbQ=",
+			"path": "github.com/spotinst/spotinst-sdk-go/spotinst/util/stringutil",
+			"revision": "bd1fee990d100f2d8f8ff4613934ba20779b295e",
+			"revisionTime": "2018-05-08T12:46:35Z"
+		},
+		{
+			"checksumSHA1": "zpjb+AZkievliBjljoPAceDKWYc=",
+			"path": "github.com/spotinst/spotinst-sdk-go/spotinst/util/uritemplates",
+			"revision": "bd1fee990d100f2d8f8ff4613934ba20779b295e",
+			"revisionTime": "2018-05-08T12:46:35Z"
+		},
+		{
+			"checksumSHA1": "Bn333k9lTndxU3D6n/G5c+GMcYY=",
+			"origin": "github.com/docker/machine/vendor/github.com/stretchr/testify/assert",
+			"path": "github.com/stretchr/testify/assert",
+			"revision": "6f9ecacb8588b3329b1e1ae78f8b169d0fd6b783",
+			"revisionTime": "2018-05-09T13:05:35Z"
+		},
+		{
+			"checksumSHA1": "MlEHIE/60sB86Lmf0MPTIXHzKzE=",
+			"origin": "github.com/docker/machine/vendor/golang.org/x/crypto/curve25519",
+			"path": "golang.org/x/crypto/curve25519",
+			"revision": "6f9ecacb8588b3329b1e1ae78f8b169d0fd6b783",
+			"revisionTime": "2018-05-09T13:05:35Z"
+		},
+		{
+			"checksumSHA1": "i3dNaI+oCYeDGIsNj7LwecTsIAs=",
+			"origin": "github.com/docker/machine/vendor/golang.org/x/crypto/ed25519",
+			"path": "golang.org/x/crypto/ed25519",
+			"revision": "6f9ecacb8588b3329b1e1ae78f8b169d0fd6b783",
+			"revisionTime": "2018-05-09T13:05:35Z"
+		},
+		{
+			"checksumSHA1": "LXFcVx8I587SnWmKycSDEq9yvK8=",
+			"origin": "github.com/docker/machine/vendor/golang.org/x/crypto/ed25519/internal/edwards25519",
+			"path": "golang.org/x/crypto/ed25519/internal/edwards25519",
+			"revision": "6f9ecacb8588b3329b1e1ae78f8b169d0fd6b783",
+			"revisionTime": "2018-05-09T13:05:35Z"
+		},
+		{
+			"checksumSHA1": "RclWhAjKAvDg2tHsuqVYC7E7otE=",
+			"origin": "github.com/docker/machine/vendor/golang.org/x/crypto/ssh",
+			"path": "golang.org/x/crypto/ssh",
+			"revision": "6f9ecacb8588b3329b1e1ae78f8b169d0fd6b783",
+			"revisionTime": "2018-05-09T13:05:35Z"
+		},
+		{
+			"checksumSHA1": "ZaU56svwLgiJD0y8JOB3+/mpYBA=",
+			"origin": "github.com/docker/machine/vendor/golang.org/x/crypto/ssh/terminal",
+			"path": "golang.org/x/crypto/ssh/terminal",
+			"revision": "6f9ecacb8588b3329b1e1ae78f8b169d0fd6b783",
+			"revisionTime": "2018-05-09T13:05:35Z"
+		},
+		{
+			"checksumSHA1": "CNHEeGnucEUlTHJrLS2kHtfNbws=",
+			"origin": "github.com/docker/machine/vendor/golang.org/x/sys/unix",
+			"path": "golang.org/x/sys/unix",
+			"revision": "6f9ecacb8588b3329b1e1ae78f8b169d0fd6b783",
+			"revisionTime": "2018-05-09T13:05:35Z"
+		}
+	],
+	"rootPath": "github.com/docker-machine-driver-spotinst"
+}
