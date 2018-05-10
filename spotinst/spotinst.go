@@ -1,30 +1,29 @@
 package spotinst
 
 import (
+	"crypto/rand"
 	"errors"
 	"fmt"
-	"crypto/rand"
+	"context"
+	"crypto/md5"
+	"io"
+	"net"
+	"strconv"
+	"time"
 
+	"github.com/docker/machine/libmachine/drivers"
+	"github.com/docker/machine/libmachine/log"
+	"github.com/docker/machine/libmachine/mcnflag"
+	"github.com/docker/machine/libmachine/state"
 	"github.com/spotinst/spotinst-sdk-go/service/elastigroup"
+	"github.com/spotinst/spotinst-sdk-go/service/elastigroup/providers/aws"
 	"github.com/spotinst/spotinst-sdk-go/spotinst"
 	"github.com/spotinst/spotinst-sdk-go/spotinst/credentials"
 	"github.com/spotinst/spotinst-sdk-go/spotinst/session"
-	"github.com/docker/machine/libmachine/drivers"
-	"crypto/md5"
-	"io"
-	"github.com/docker/machine/libmachine/log"
-	"strconv"
-	"github.com/docker/machine/libmachine/mcnflag"
-	"net"
-	"github.com/docker/machine/libmachine/state"
-	"context"
-	"github.com/spotinst/spotinst-sdk-go/service/elastigroup/providers/aws"
-	"time"
 )
 
 const (
 	driverName               = "spotinst"
-	machineSecurityGroupName = "docker-machine"
 	defaultSSHUser           = "ubuntu"
 	dockerPort               = 2376
 	sshPorts                 = 22
@@ -38,18 +37,18 @@ type Config struct {
 
 type Driver struct {
 	*drivers.BaseDriver
-	Id                     string
-	clientFactory          func() Client
-	SpotinstAccountID      string
-	SpotinstToken          string
-	SpotinstElasticGroupID string
-	SSHUser                string
-	PublicDNS              *string
-	PrivateIpAddress       *string
-	PublicIpAddress        *string
-	UsePublicIPOnly        bool
-	InstanceId             *string
-	SpotInstanceRequest    string
+	Id                    string
+	clientFactory         func() Client
+	SpotinstAccount       string
+	SpotinstToken         string
+	SpotinstElastiGroupID string
+	SSHUser               string
+	PublicDNS             *string
+	PrivateIpAddress      *string
+	PublicIpAddress       *string
+	UsePublicIPOnly       bool
+	InstanceId            *string
+	SpotInstanceRequest   string
 }
 
 type Client struct {
@@ -87,11 +86,11 @@ func (d *Driver) BuildClient() Client {
 	config.WithUserAgent("DockerMachine")
 
 	var static *credentials.StaticProvider
-	if d.SpotinstToken != "" || d.SpotinstAccountID != "" {
+	if d.SpotinstToken != "" || d.SpotinstAccount != "" {
 		static = &credentials.StaticProvider{
 			Value: credentials.Value{
 				Token:   d.SpotinstToken,
-				Account: d.SpotinstAccountID,
+				Account: d.SpotinstAccount,
 			},
 		}
 
@@ -135,14 +134,14 @@ func (d *Driver) GetCreateFlags() []mcnflag.Flag {
 			EnvVar: "SPOTINST_TOKEN",
 		},
 		mcnflag.StringFlag{
-			Name:   "spotinst_account_id",
-			Usage:  "spotinst account id",
-			EnvVar: "SPOTINST_ACCOUNT_ID",
+			Name:   "spotinst_account",
+			Usage:  "spotinst account",
+			EnvVar: "SPOTINST_ACCOUNT",
 		},
 		mcnflag.StringFlag{
-			Name:   "spotinst_elasticgroup_id",
-			Usage:  "spotinst elasticgroup id",
-			EnvVar: "SPOTINST_ELSTICGROUP_ID",
+			Name:   "spotinst_elastigroup_id",
+			Usage:  "spotinst elastigroup id",
+			EnvVar: "SPOTINST_ELSTIGROUP_ID",
 		},
 		mcnflag.StringFlag{
 			Name:   "spotinst_sshkey_path",
@@ -163,9 +162,9 @@ func (d *Driver) GetCreateFlags() []mcnflag.Flag {
 }
 
 func (d *Driver) SetConfigFromFlags(flags drivers.DriverOptions) error {
-	d.SpotinstAccountID = flags.String("spotinst_account_id")
+	d.SpotinstAccount = flags.String("spotinst_account")
 	d.SpotinstToken = flags.String("spotinst_token")
-	d.SpotinstElasticGroupID = flags.String("spotinst_elasticgroup_id")
+	d.SpotinstElastiGroupID = flags.String("spotinst_elastigroup_id")
 	d.UsePublicIPOnly = flags.Bool("use_public_ip")
 	d.SSHUser = flags.String("ssh_user")
 	d.SSHKeyPath = flags.String("spotinst_sshkey_path")
@@ -180,7 +179,7 @@ func (d *Driver) DriverName() string {
 
 func (d *Driver) PreCreateCheck() error {
 
-	if d.SpotinstToken == "" || d.SpotinstAccountID == "" {
+	if d.SpotinstToken == "" || d.SpotinstAccount == "" {
 		err := errors.New(tag + "Spotinst credentials was not provided")
 		return err
 	}
@@ -208,12 +207,12 @@ func (d *Driver) Create() error {
 }
 
 func (d *Driver) innerCreate() error {
-	stdLog(DEBUG,"creating new server for you...")
+	stdLog(DEBUG, "creating new server for you...")
 	var scaleType = "up"
 	var adjustment = 1
 	input := new(aws.ScaleGroupInput)
 	input.Adjustment = &adjustment
-	input.GroupID = &d.SpotinstElasticGroupID
+	input.GroupID = &d.SpotinstElastiGroupID
 	input.ScaleType = &scaleType
 	output, e := d.getClient().elastigroup.CloudProviderAWS().Scale(context.Background(), input)
 	if e != nil {
@@ -232,7 +231,7 @@ func (d *Driver) innerCreate() error {
 	// Handle spotrequest
 	if scaleResultItem.NewSpotRequests != nil {
 		spotInstanceRequestID := scaleResultItem.NewSpotRequests[0].SpotInstanceRequestID
-		stdLog(DEBUG,"Spotrequest: %v", spotinst.StringValue(spotInstanceRequestID))
+		stdLog(DEBUG, "Spotrequest: %v", spotinst.StringValue(spotInstanceRequestID))
 		err := d.waitForInstanceSpot(spotInstanceRequestID)
 		if err != nil {
 			log.Errorf(tag + "Failed to get server from spot request " + e.Error())
@@ -336,12 +335,12 @@ func (d *Driver) GetSSHUsername() string {
 
 func (d *Driver) GetSSHPort() (int, error) {
 	d.SSHPort = sshPorts
-	stdLog(DEBUG,"Found SSH Port %v",d.SSHPort)
+	stdLog(DEBUG, "Found SSH Port %v", d.SSHPort)
 	return d.SSHPort, nil
 }
 
 func (d *Driver) GetSSHKeyPath() string {
-	stdLog(DEBUG,"Found Keypath %v",d.SSHKeyPath)
+	stdLog(DEBUG, "Found Keypath %v", d.SSHKeyPath)
 	return d.SSHKeyPath
 }
 
@@ -363,7 +362,7 @@ func (d *Driver) Restart() error {
 func (d *Driver) Kill() error {
 	input := new(aws.DetachGroupInput)
 
-	input.GroupID = &d.SpotinstElasticGroupID
+	input.GroupID = &d.SpotinstElastiGroupID
 	if d.InstanceId == nil {
 		return nil
 	}
@@ -385,7 +384,7 @@ func (d *Driver) getSpotRequestStatus(spotRequestId *string) (*aws.Instance, err
 
 	spotReqParam := spotinst.StringValue(spotRequestId)
 	input := new(aws.StatusGroupInput)
-	input.GroupID = &d.SpotinstElasticGroupID
+	input.GroupID = &d.SpotinstElastiGroupID
 
 	output, e := d.getClient().elastigroup.CloudProviderAWS().Status(context.Background(), input)
 
@@ -408,14 +407,14 @@ func (d *Driver) getSpotRequestStatus(spotRequestId *string) (*aws.Instance, err
 		}
 	}
 
-	stdLog(DEBUG,"did not find status for spot request %v", spotRequestId)
+	stdLog(DEBUG, "did not find status for spot request %v", spotRequestId)
 	err := errors.New("Spot Request canceled")
 	return nil, err
 }
 
 func (d *Driver) getInstanceStatus() (*aws.Instance, error) {
 	input := new(aws.StatusGroupInput)
-	input.GroupID = &d.SpotinstElasticGroupID
+	input.GroupID = &d.SpotinstElastiGroupID
 	output, e := d.getClient().elastigroup.CloudProviderAWS().Status(context.Background(), input)
 
 	if e != nil {
@@ -434,9 +433,9 @@ func (d *Driver) getInstanceStatus() (*aws.Instance, error) {
 	return nil, err
 }
 
-func (d *Driver) waitForInstanceStart() (error) {
+func (d *Driver) waitForInstanceStart() error {
 	laps := 10
-	stdLog(DEBUG,"waiting for instance Ip...",nil)
+	stdLog(DEBUG, "waiting for instance Ip...", nil)
 	for d.PublicIpAddress == nil && d.PrivateIpAddress == nil && laps != 0 {
 		inst, e := d.getInstanceStatus()
 
@@ -446,20 +445,20 @@ func (d *Driver) waitForInstanceStart() (error) {
 
 		if d.UsePublicIPOnly {
 			if inst.PublicIp != nil {
-				stdLog(DEBUG,"Found public IP %v",inst.PublicIp)
+				stdLog(DEBUG, "Found public IP %v", inst.PublicIp)
 				d.PublicIpAddress = inst.PublicIp
 				return nil
 			}
 		} else {
 			if inst.PrivateIp != nil {
-				stdLog(DEBUG,"Found private IP %v",inst.PrivateIp)
+				stdLog(DEBUG, "Found private IP %v", inst.PrivateIp)
 				d.PrivateIpAddress = inst.PrivateIp
 				return nil
 			}
 		}
 
 		laps = laps - 1
-		stdLog(DEBUG,"Waiting for instance IP %v retries left", strconv.Itoa(laps))
+		stdLog(DEBUG, "Waiting for instance IP %v retries left", strconv.Itoa(laps))
 		time.Sleep(10 * time.Second)
 	}
 
@@ -468,11 +467,11 @@ func (d *Driver) waitForInstanceStart() (error) {
 
 }
 
-func (d *Driver) waitForInstanceSpot(spotInstanceRequestID *string) (error) {
+func (d *Driver) waitForInstanceSpot(spotInstanceRequestID *string) error {
 	laps := 10
-	stdLog(DEBUG,"waiting for spot request to get instance.. ")
+	stdLog(DEBUG, "waiting for spot request to get instance.. ")
 	for d.InstanceId == nil && laps != 0 {
-		stdLog(INFO,"Check spot request status",nil)
+		stdLog(INFO, "Check spot request status", nil)
 		instance, err := d.getSpotRequestStatus(spotInstanceRequestID)
 
 		if err != nil {
@@ -480,13 +479,13 @@ func (d *Driver) waitForInstanceSpot(spotInstanceRequestID *string) (error) {
 		}
 
 		if instance != nil {
-			stdLog(DEBUG,"Instance found %v", spotinst.StringValue(instance.ID))
+			stdLog(DEBUG, "Instance found %v", spotinst.StringValue(instance.ID))
 			d.InstanceId = instance.ID
 			return nil
 		}
 
 		laps = laps - 1
-		stdLog(DEBUG,"Waiting for instance  %v retries left", strconv.Itoa(laps))
+		stdLog(DEBUG, "Waiting for instance  %v retries left", strconv.Itoa(laps))
 		time.Sleep(10 * time.Second)
 
 	}
@@ -496,7 +495,7 @@ func (d *Driver) waitForInstanceSpot(spotInstanceRequestID *string) (error) {
 	return err
 }
 
-func stdLog(logSeverity string,fmtString string, args ...interface{}) {
+func stdLog(logSeverity string, fmtString string, args ...interface{}) {
 	switch logSeverity {
 	case DEBUG:
 		log.Debugf(tag+fmtString, args)
