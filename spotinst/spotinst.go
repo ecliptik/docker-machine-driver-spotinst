@@ -198,8 +198,6 @@ func (d *Driver) Create() error {
 	}
 
 	if err := d.innerCreate(); err != nil {
-		// cleanup partially created resources
-		//d.Remove()
 		return err
 	}
 
@@ -444,15 +442,17 @@ func (d *Driver) waitForInstanceStart() error {
 		}
 
 		if d.UsePublicIPOnly {
-			if inst.PublicIp != nil {
-				stdLog(DEBUG, "Found public IP %v", inst.PublicIp)
-				d.PublicIpAddress = inst.PublicIp
+			publicIP := inst.PublicIP
+			if publicIP != nil {
+				stdLog(DEBUG, "Found public IP %v", publicIP)
+				d.PublicIpAddress = publicIP
 				return nil
 			}
 		} else {
-			if inst.PrivateIp != nil {
-				stdLog(DEBUG, "Found private IP %v", inst.PrivateIp)
-				d.PrivateIpAddress = inst.PrivateIp
+			privateIP := inst.PrivateIP
+			if privateIP != nil {
+				stdLog(DEBUG, "Found private IP %v", privateIP)
+				d.PrivateIpAddress = privateIP
 				return nil
 			}
 		}
