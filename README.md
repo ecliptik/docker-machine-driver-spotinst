@@ -21,7 +21,7 @@ For Docker-Machine to connect to Spotinst ElastiGroup You will need:
  * Elastic Group with:
     * Docker-Machine Supported OS AMI (Amazon-Linux does not supported)
     * Security Group with inbound of SSH (22) and Docker-Machine (2376) ports open
- * Fill in the required parameters in from the option section
+ * All required parameters from the option section fulfilled
     
  
 
