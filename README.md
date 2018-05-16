@@ -14,7 +14,7 @@ Create instances on [Spotinst](https://spotinst.com/) using Docker-Machine.
 docker-machine create -d spotinst
 ```
 
-# Requierments
+# Requirements
 For Docker-Machine to connect to Spotinst Elastigroup You will need:
  * Spotinst Account
  * Spotinst Token
