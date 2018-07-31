@@ -50,8 +50,11 @@ docker-machine create -d spotinst --help
 
 The following example creates a server called `dev` on Spotinst Elastigroup 
 ```apple js
-docker-machine create -d spotinst --spotinst-account "act-12345" --spotinst-elastigroup-id "sig-12345" --spotinst-token "<Token>" --spotinst-sshkey-path /home/ubuntu/pems/myssh.pem" --use-public-ip dev
+docker-machine create -d spotinst --spotinst-account "act-12345" --spotinst-elastigroup-id "sig-12345" --spotinst-token "<Token>" --spotinst-sshkey-path "/home/ubuntu/pems/myssh.pem" --use-public-ip dev
 ```
-
+To get debug message use the following example
+```apple js
+docker-machine --debug create -d spotinst --spotinst-account "act-12345" --spotinst-elastigroup-id "sig-12345" --spotinst-token "<Token>" --spotinst-sshkey-path "/home/ubuntu/pems/myssh.pem" --use-public-ip dev
+```
 
 

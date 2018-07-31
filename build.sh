@@ -13,6 +13,10 @@ for GOOS in $OS; do
         arch="$GOOS-$GOARCH"
         binary="bin/docker-machine-driver-spotinst.$arch"
         echo "Building $binary"
-        GOOS=$GOOS GOARCH=$GOARCH go build -o $binary github.com/docker-machine-driver-spotinst
+        GOOS=$GOOS GOARCH=$GOARCH go build -gcflags=-trimpath=$GOPATH -asmflags=-trimpath=$GOPATH -o $binary github.com/docker-machine-driver-spotinst
     done
 done
+
+echo "Install adapter in local conputer"
+
+cp bin/docker-machine-driver-spotinst.darwin-amd64 /usr/local/bin/docker-machine-driver-spotinst

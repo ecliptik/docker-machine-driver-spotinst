@@ -1,11 +1,11 @@
 package spotinst
 
 import (
+	"context"
+	"crypto/md5"
 	"crypto/rand"
 	"errors"
 	"fmt"
-	"context"
-	"crypto/md5"
 	"io"
 	"net"
 	"strconv"
@@ -98,7 +98,7 @@ func (d *Driver) BuildClient() Client {
 	creds := credentials.NewCredentials(static)
 
 	if _, err := creds.Get(); err != nil {
-		log.Error(tag+"Failed to instantiate Spotinst client: %v", err)
+		stdLog(ERROR, "Failed to instantiate Spotinst client: %v", err)
 	}
 	config.WithCredentials(creds)
 
@@ -177,7 +177,7 @@ func (d *Driver) DriverName() string {
 	return driverName
 }
 
-func (d *Driver) PreCreateCheck() error {
+func (d *Driver) PrezCreateCheck() error {
 
 	if d.SpotinstToken == "" || d.SpotinstAccount == "" {
 		err := errors.New(tag + "Spotinst credentials was not provided")
@@ -198,6 +198,7 @@ func (d *Driver) Create() error {
 	}
 
 	if err := d.innerCreate(); err != nil {
+		d.Remove()
 		return err
 	}
 
@@ -214,7 +215,7 @@ func (d *Driver) innerCreate() error {
 	input.ScaleType = &scaleType
 	output, e := d.getClient().elastigroup.CloudProviderAWS().Scale(context.Background(), input)
 	if e != nil {
-		log.Errorf(tag+"Client initialized failed %v", e.Error())
+		stdLog(ERROR, "Client initialized failed %v", e.Error())
 		return e
 	}
 
@@ -227,18 +228,26 @@ func (d *Driver) innerCreate() error {
 	scaleResultItem := output.Items[0]
 
 	// Handle spotrequest
-	if scaleResultItem.NewSpotRequests != nil {
+	if scaleResultItem.NewSpotRequests != nil && scaleResultItem.NewInstances == nil {
 		spotInstanceRequestID := scaleResultItem.NewSpotRequests[0].SpotInstanceRequestID
 		stdLog(DEBUG, "Spotrequest: %v", spotinst.StringValue(spotInstanceRequestID))
-		err := d.waitForInstanceSpot(spotInstanceRequestID)
-		if err != nil {
-			log.Errorf(tag + "Failed to get server from spot request " + e.Error())
+
+		if spotInstanceRequestID != nil {
+			err := d.waitForInstanceSpot(spotInstanceRequestID)
+			if err != nil {
+				log.Errorf(tag + "Failed to get server from spot request " + e.Error())
+				return err
+			}
+		} else {
+			stdLog(ERROR, "Failed to get spot request")
+			err := errors.New("Failed to get spot request")
 			return err
 		}
 
 		errInst := d.waitForInstanceStart()
 
 		if errInst != nil {
+			stdLog(ERROR, "Instance failed to start: %v, Initiate kill", e.Error())
 			return errInst
 		}
 
@@ -250,6 +259,7 @@ func (d *Driver) innerCreate() error {
 		err := d.waitForInstanceStart()
 
 		if err != nil {
+			stdLog(ERROR, "Instance failed to start: %v, Initiate kill", e.Error())
 			return err
 		}
 	}
@@ -294,7 +304,7 @@ func (d *Driver) GetState() (state.State, error) {
 
 	instance, err := d.getInstanceStatus()
 	if err != nil {
-		return state.Stopped, nil
+		return state.Error, nil
 	}
 	switch *instance.Status {
 	case InstanceStateNamePending:
@@ -389,7 +399,8 @@ func (d *Driver) getSpotRequestStatus(spotRequestId *string) (*aws.Instance, err
 	if e != nil {
 		return nil, e
 	}
-	if output.Instances != nil && len(output.Instances) > 0 {
+
+	if output != nil && output.Instances != nil && len(output.Instances) > 0 {
 		for _, v := range output.Instances {
 
 			spotReq := spotinst.StringValue(v.SpotRequestID)
@@ -432,7 +443,7 @@ func (d *Driver) getInstanceStatus() (*aws.Instance, error) {
 }
 
 func (d *Driver) waitForInstanceStart() error {
-	laps := 10
+	laps := 15
 	stdLog(DEBUG, "waiting for instance Ip...", nil)
 	for d.PublicIpAddress == nil && d.PrivateIpAddress == nil && laps != 0 {
 		inst, e := d.getInstanceStatus()
@@ -462,7 +473,7 @@ func (d *Driver) waitForInstanceStart() error {
 		time.Sleep(20 * time.Second)
 	}
 
-	err := errors.New("Wait to instance" + *d.InstanceId + "reached timeout")
+	err := errors.New("Wait to instance " + *d.InstanceId + "reached timeout")
 	return err
 
 }
