@@ -18,6 +18,6 @@ for GOOS in $OS; do
     done
 done
 
-echo "Install adapter in local conputer"
+echo "Install adapter in local computer"
 
 cp "bin/docker-machine-driver-spotinst."$VERSION".darwin-"$ARCH "/usr/local/bin/docker-machine-driver-spotinst"
