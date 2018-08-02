@@ -28,6 +28,7 @@ const (
 	dockerPort     = 2376
 	sshPorts       = 22
 	tag            = "[SPOTINST DRIVER] "
+	version        = "0.2"
 )
 
 type Config struct {
@@ -98,7 +99,7 @@ func (d *Driver) BuildClient() Client {
 	creds := credentials.NewCredentials(static)
 
 	if _, err := creds.Get(); err != nil {
-		stdLog(ERROR, "Failed to instantiate Spotinst client: %v", err)
+		stdLog(ERROR, "Failed to initiate Spotinst client: %v", err)
 	}
 	config.WithCredentials(creds)
 
@@ -117,7 +118,7 @@ func generateId() string {
 	rb := make([]byte, 10)
 	_, err := rand.Read(rb)
 	if err != nil {
-		log.Warnf(tag+"Unable to generate id: %s", err)
+		stdLog(WARN, "Unable to generate id: %s", err)
 	}
 
 	h := md5.New()
@@ -177,7 +178,7 @@ func (d *Driver) DriverName() string {
 	return driverName
 }
 
-func (d *Driver) PrezCreateCheck() error {
+func (d *Driver) PreCreateCheck() error {
 
 	if d.SpotinstToken == "" || d.SpotinstAccount == "" {
 		err := errors.New(tag + "Spotinst credentials was not provided")
@@ -206,7 +207,8 @@ func (d *Driver) Create() error {
 }
 
 func (d *Driver) innerCreate() error {
-	stdLog(DEBUG, "creating new server for you...")
+	stdLog(INFO, "Spotinst Driver version %v", version)
+	stdLog(DEBUG, "Creating new server for you...")
 	var scaleType = "up"
 	var adjustment = 1
 	input := new(aws.ScaleGroupInput)
@@ -230,7 +232,7 @@ func (d *Driver) innerCreate() error {
 	// Handle spotrequest
 	if scaleResultItem.NewSpotRequests != nil && scaleResultItem.NewInstances == nil {
 		spotInstanceRequestID := scaleResultItem.NewSpotRequests[0].SpotInstanceRequestID
-		stdLog(DEBUG, "Spotrequest: %v", spotinst.StringValue(spotInstanceRequestID))
+		stdLog(DEBUG, "SpotRequest: %v", spotinst.StringValue(spotInstanceRequestID))
 
 		if spotInstanceRequestID != nil {
 			err := d.waitForInstanceSpot(spotInstanceRequestID)
